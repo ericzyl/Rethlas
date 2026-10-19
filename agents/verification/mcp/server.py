@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+import os
 import re
 from datetime import datetime, timezone
 from pathlib import Path
@@ -20,11 +21,18 @@ except ImportError:  # pragma: no cover - dependency managed by requirements
 
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-MEMORY_ROOT = REPO_ROOT / "memory"
-RESULTS_ROOT = REPO_ROOT / "results"
+# DA integration: host-owned roots; run_id is the per-verification namespace.
+MEMORY_ROOT = Path(os.environ.get("RETHAS_MEMORY_ROOT", str(REPO_ROOT / "memory")))
+RESULTS_ROOT = Path(
+    os.environ.get(
+        "RETHAS_VERIFICATION_RESULTS_ROOT", str(REPO_ROOT / "results")
+    )
+)
 SCHEMA_PATH = REPO_ROOT / "schemas" / "verification_output.schema.json"
 
-THEOREM_SEARCH_URL = "https://leansearch.net/thm/search"
+THEOREM_SEARCH_URL = os.environ.get(
+    "RETHAS_MATLAS_URL", "https://leansearch.net/thm/search"
+)
 THEOREM_SEARCH_TASK = (
     "Given a math statement, retrieve useful references, such as theorems, "
     "lemmas, and definitions, that are useful for solving the given problem."

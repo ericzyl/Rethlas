@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import math
+import os
 import re
 from collections import Counter
 from datetime import datetime, timezone
@@ -16,15 +17,23 @@ except ImportError:  # pragma: no cover - dependency should be installed via req
     FastMCP = None  # type: ignore[assignment]
 
 REPO_ROOT = Path(__file__).resolve().parents[1]
-MEMORY_ROOT = REPO_ROOT / "memory"
+# DA integration: the host mounts this MCP server for many loops in one process.
+# RETHAS_MEMORY_ROOT must therefore be an absolute, host-owned directory;
+# problem_id is then the per-loop namespace below that root.
+MEMORY_ROOT = Path(os.environ.get("RETHAS_MEMORY_ROOT", str(REPO_ROOT / "memory")))
 
-THEOREM_SEARCH_URL = "https://leansearch.net/thm/search"
+THEOREM_SEARCH_URL = os.environ.get(
+    "RETHAS_MATLAS_URL", "https://leansearch.net/thm/search"
+)
 THEOREM_SEARCH_TASK = (
     "Given a math statement, retrieve useful references, such as theorems, "
     "lemmas, and definitions, that are useful for solving the given problem."
 )
 
-VERIFY_PROOF_URL = "http://127.0.0.1:8091/verify"
+# Kept for the standalone Rethlas workflow. DA's rethlas_verify replaces it.
+VERIFY_PROOF_URL = os.environ.get(
+    "RETHAS_VERIFY_URL", "http://127.0.0.1:8091/verify"
+)
 
 CHANNEL_FILES: Dict[str, str] = {
     "immediate_conclusions": "immediate_conclusions.jsonl",
