@@ -52,10 +52,25 @@ def _utc_now() -> str:
 
 
 def sanitize_run_id(raw: str) -> str:
-    cleaned = re.sub(r"\s+", "_", str(raw).strip())
-    cleaned = re.sub(r"[^A-Za-z0-9._-]", "_", cleaned)
-    cleaned = re.sub(r"_+", "_", cleaned).strip("._")
-    return cleaned or "run"
+    """Preserve relative path components so DA can namespace loop/verification.
+
+    Standalone Rethlas run ids are a single timestamp segment, so this is
+    backwards compatible. '..' is rejected to keep the path under MEMORY_ROOT.
+    """
+    normalized = str(raw).strip().replace("\\", "/")
+    parts: List[str] = []
+    for part in normalized.split("/"):
+        stripped = part.strip()
+        if stripped in {"", "."}:
+            continue
+        if stripped == "..":
+            raise ValueError("run_id must not contain '..' path components")
+        cleaned = re.sub(r"\s+", "_", stripped)
+        cleaned = re.sub(r"[^A-Za-z0-9._-]", "_", cleaned)
+        cleaned = re.sub(r"_+", "_", cleaned).strip("._")
+        if cleaned:
+            parts.append(cleaned)
+    return "/".join(parts) or "run"
 
 
 def _run_dir(run_id: str) -> Path:
