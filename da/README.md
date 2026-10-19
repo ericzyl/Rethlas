@@ -9,10 +9,10 @@ transport are configurable.
 
 | Variable | Required | Meaning |
 | --- | --- | --- |
-| `RETHAS_MEMORY_ROOT` | yes in DA | Absolute root for all MCP memory namespaces. DA sets it to `<DATA_DIR>/rethlas/loops`. |
-| `RETHAS_VERIFICATION_RESULTS_ROOT` | yes in DA | Absolute root for verification outputs. DA sets it to `<DATA_DIR>/rethlas/loops`. |
-| `RETHAS_MATLAS_URL` | no | Override the Matlas theorem-search endpoint. |
-| `RETHAS_VERIFY_URL` | no | Standalone verification endpoint; DA does not use it. |
+| `RETHLAS_MEMORY_ROOT` | yes in DA | Absolute root for all MCP memory namespaces. DA sets it to `<DATA_DIR>/rethlas/loops`. |
+| `RETHLAS_VERIFICATION_RESULTS_ROOT` | yes in DA | Absolute root for verification outputs. DA sets it to `<DATA_DIR>/rethlas/loops`. |
+| `RETHLAS_MATLAS_URL` | no | Override the Matlas theorem-search endpoint. |
+| `RETHLAS_VERIFY_URL` | no | Standalone verification endpoint; DA does not use it. |
 
 The MCP tools keep their original `problem_id` / `run_id` namespaces. The DA
 adapter passes `<loopId>/generation` for the generation memory and
